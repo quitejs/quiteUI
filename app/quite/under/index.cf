@@ -1,2 +1,5 @@
 common = require './common'
+console.log 'insert', _.move
+console.log 'common', common.insert
 _.extend _, common
+console.log 'insert', _.move
