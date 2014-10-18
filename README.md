@@ -1,8 +1,8 @@
-Dutch Baby Brunch Skeleton
-==========================
+=======
+quiteUI
+=======
 
-Based on backbone.js 1.0, boostrap 3.0, coffeescript, stylus and jade
-
+write HTML in nearly pure javascript(coffeescript)
   * npm install
   * bower install
   * npm start (start development server in source watch mode) 
