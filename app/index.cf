@@ -1,0 +1,11 @@
+json = JSON
+require 'quite'
+require 'bus'
+require 'lit'
+require 'Hash'
+route = require 'route'
+frame =require 'pages/common/frame'
+
+window.onload = ->
+  document.body.appendChild frame.build().elmt
+  route()

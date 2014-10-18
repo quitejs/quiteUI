@@ -1,0 +1,94 @@
+window.Block = class Block extends Quite
+  constructor: (@D) ->
+    super
+    @attrs(
+      'page'
+    )
+  D: {}
+  piece: {}
+  feed: (@D) ->
+  render: (@params)->
+    @params || @params = {}
+    if @needAcnt
+      @params.acntId = Bus.user.id
+      @params.acntToken = Bus.user.token
+
+    console.log @params
+    # console.log @dataSrc
+    console.log 'src', @dataSrc
+    if not @dataSrc
+      return
+    done = (data, status) =>
+      console.log 'data', data
+      @D = data
+      console.log 'get', @D
+    fail = ->
+      console.log 'error'
+    $.ajax(
+      url: @dataSrc
+      data: @params
+      dataType: 'json'
+      success: done
+      error: fail
+      async: false
+    )
+
+
+  url: (name)->
+    @_page || @_page = ''
+    "##{@_page.config.name}/#{name}"
+
+  remove: ->
+    @piece.remove()
+  
+  # refresh: (attr)->
+  #   if attr
+  #     holder = $('.pieceHolder', @piece.elmt)[0]
+  #     holder.innerText = @D[attr]
+  #   else
+  #     # model = @getTemplateData()
+  #     element = @piece.elmt
+  #     holders = element.getElementById('.pieceHolder')
+  #     elmts = []
+  #     for elmt in holders
+  #       elmts.push elmt
+  #
+  #     if element.className?.indexOf('pieceHolder') != -1
+  #       elmts.push element
+  #
+  #     for elmt in elmts
+  #       attr = elmt.getAttribute('data-holderid')
+  #       attrView = @["#{attr}View"]
+  #       # if attrView?(@get attr)
+  #       #   elmt.innerHTML = attrView(@get attr).elmt?.outerHTML
+  #       # else
+  #       elmt.innerText = @D[attr]
+
+
+
+
+  C: (args...) ->
+    @piece.C args...
+    @
+
+  build: ->
+    P.div('')
+
+  refresh: ->
+    # model = @getTemplateData()
+    element = @piece.elmt
+    holders = element.getElementsByClassName('pieceHolder')
+    elmts = []
+    for elmt in holders
+      elmts.push elmt
+    if element.className?.indexOf('pieceHolder') != -1
+      elmts.push element
+
+    for elmt in elmts
+      attr = elmt.getAttribute('data-holderid')
+      attrView = @["#{attr}View"]
+      if attrView?(@D[attr])
+        elmt.innerHTML = attrView(@D[attr]).elmt?.outerHTML
+      else
+        elmt.innerText = @D[attr]
+    @

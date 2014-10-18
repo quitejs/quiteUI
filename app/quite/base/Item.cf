@@ -1,0 +1,15 @@
+window.Item = class Item extends Block 
+  constructor: ->
+    super
+    @attrs(
+      'set'
+    )
+
+  select: ->
+    @piece.addClass 'select'
+  unselect: ->
+    @piece.removeClass 'select'
+  
+  trigger: ->
+    # console.log @link
+    @link.click()

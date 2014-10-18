@@ -1,0 +1,47 @@
+# module.exports = store = (hash, cb) ->
+#   todoEntity[hash.action()] hash.params(), cb
+
+json = JSON
+module.exports = store =
+  add: (todo, cb) ->
+    todo.id = "piece-todo-#{new Date().valueOf()}"
+    lsUtil.setItem todo.id, todo
+    cb null, todo
+
+  del: (todo, cb) ->
+    lsUtil.removeItem todo.id
+    cb null, todo
+
+  mod: (todo, cb) ->
+    console.log 'todo', todo
+    lsUtil.setItem todo.id, todo
+    cb null, todo
+
+  get: (condition, cb) ->
+    todos = []
+    for id, todo of localStorage
+      if id.indexOf('piece-todo') is 0
+        todo = lsUtil.getItem id
+        fit = true
+        for key, value of condition
+          if todo[key] isnt value
+            fit = false
+            break
+        if fit
+          todos.push todo
+    console.log todos
+    todos.reverse()
+    cb null, todos
+
+lsUtil =
+  setItem: (name, item) ->
+    item = json.stringify item
+    console.log 'set', item
+    localStorage.setItem name, item
+  getItem: (name) ->
+    item = localStorage.getItem name
+    console.log 'get', item
+    if item and item isnt 'undefined'
+      json.parse item
+  removeItem: (name) ->
+    localStorage.removeItem name

@@ -1,0 +1,4 @@
+methods = ["Element.getAttributeNS", "Element.getAttributeNode", "Element.getAttributeNodeNS", "Element.getBoundingClientRect", "", "Element.getClientRects", "", "Element.getElementsByClassName", "Element.getElementsByTagName", "Element.getElementsByTagNameNS", "Element.hasAttribute", "Element.hasAttributeNS", "Element.insertAdjacentHTML", "Element.matches", "Element.querySelector", "Element.querySelectorAll", "Element.removeAttribute", "Element.removeAttributeNS", "Element.removeAttributeNode", "Element.requestFullscreen", "Element.requestPointerLock", "Element.scrollIntoView", "Element.setAttribute", "Element.setAttributeNS", "Element.setAttributeNode", "Element.setAttributeNodeNS", "Element.setCapture", "Element.supports", "element.getAttribute", ""]
+
+for method in methods
+  console.log method.split('.')[1] + ','

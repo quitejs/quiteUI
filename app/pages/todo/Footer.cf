@@ -1,0 +1,51 @@
+module.exports = class Footer extends Matter
+  render: (@D) ->
+    super @D
+    if @D.completed is 0
+      @completed.hide()
+    else
+      if @completed._hide
+        @completed.show()
+  build: ->
+
+    set = new StatusSet()
+    @piece = P.footer().id('footer').C(
+      P.span().id('todo-count').C(
+        P.strong().h('active')
+        ' items left'
+      )
+      set.items(
+        for statu in ['all', 'active', 'completed']
+          item = new StatusItem(statu)
+          item.set(set)
+      )
+      set.build()
+      set.select(0)
+
+      @completed = P.button().id('clear-completed').C(
+        "Clear completed("
+        P.span().h('completed')
+        ")"
+      ).onclick =>
+        @_page.clearCompleted()
+    )
+    @piece
+
+class StatusSet extends RadioSet
+  build: ->
+    @_items || @_items = []
+    @piece = P.ul().id('filters').C(
+      for item in @_items
+        item.build()
+    )
+class StatusItem extends Item
+  build: ->
+    @piece = P.li().C(
+      @link = P.a().href("#todo/#{@D}").C(@D).onclick =>
+        @_set.select @
+    )
+  select: ->
+    @link.addClass 'selected'
+  unselect: ->
+    @link.removeClass 'selected'
+

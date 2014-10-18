@@ -1,0 +1,14 @@
+module.exports = class ActionLink
+  text: ''
+  actionName: ''
+  action: ->
+  onclick: (@action) ->
+  flag: (@actionName) ->
+
+  build: ->
+    @piece = P.a().href("#").h(@text).onclick(@action)
+    if @actionName
+      @piece.C(P.i().class(S["icon-#{actionName}"]))
+    return @piece
+
+

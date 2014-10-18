@@ -1,0 +1,245 @@
+constants = require './constants'
+attrs = constants.attrs()
+events = constants.events()
+props = constants.props()
+nodeProps = constants.nodeProps()
+props = props.concat nodeProps
+tags = constants.tags()
+nodeMethods = constants.nodeMethods()
+elmtMethods = constants.elmtMethods()
+htmlElmtMethods = constants.htmlElmtMethods()
+
+methods = nodeMethods.concat elmtMethods
+methods = methods.concat htmlElmtMethods
+
+class Piece
+  # tag: ''
+  # elmt: ''
+  constructor: (elmt) ->
+    if typeof elmt is 'string'
+      @elmt = document.createElement elmt
+    else if elmt instanceof Element
+      @elmt = elmt
+
+  h: (attr) ->
+    @hold attr
+
+  hold : (attr) ->
+    @elmt.setAttribute('data-holderid', attr)
+    @addClass('pieceHolder')
+    @
+  
+  select: (selector) ->
+    type = selector[0]
+    name = selector[1..]
+    elmts = {}
+    if type is '#'
+      elmt = @elmt.getElementById(name)
+      new Piece elmt
+    else if type is '.'
+      elmts = @elmt.getElementsByClassName(name)
+      new PieceSet elmts
+    else 
+      elmts = @elmt.getElementsByTagName(selector)
+      new PieceSet elmts
+
+  render: (data, attrView) ->
+    # model = @getTemplateData()
+    holders = @select('.pieceHolder')
+    elmts = []
+    for elmt in holders
+      elmts.push elmt
+
+    if @class().indexOf('pieceHolder') >= 0
+      holders.elmts.push @
+
+    for piece in holders
+      attr = piece.attr('data-holderid')
+      attrView = @["#{attr}View"]
+      if attrView?(@get attr)
+        elmt.innerHTML = attrView(@get attr).elmt?.outerHTML
+      else
+        elmt.innerText = @get(attr)
+  attr: (name, value) ->
+    if value is undefined
+      @elmt.getAttribute(name)
+    else
+      @elmt.setAttribute(name, value)
+    @
+  replace: (piece) ->
+    newElmt =  @elmt.parentNode.insertBefore piece.elmt, @elmt
+    @remove()
+    @elmt = newElmt
+    @
+
+  hide: ->
+    @_hide = true
+    @style 'display:none'
+    @
+  show: ->
+    if @_hide
+      @_hide = false
+    @style 'display'
+    @
+  addClass : (name) ->
+    @class("#{name} #{@className()}")
+    @
+  
+  removeClass : (name) ->
+    @class(@class().replace("#{name}", ''))
+    @
+
+  toggleClass: (name) ->
+    if @class().indexOf(name) >= 0
+      @removeClass name
+    else
+      @addClass name
+  remove: ->
+    console.log @elmt
+    console.log @elmt.parentNode
+    @elmt.parentElement.removeChild(@elmt)
+
+  destroy: ->
+    @remove()
+
+  insert: (elmt, position) ->
+    if elmt instanceof Piece
+      elmt = elmt.elmt
+    children = @childNodes()
+    if position < 0
+      position = 0
+    if position >= children.length
+      console.log elmt
+      @appendChild elmt
+    else
+      target = children[position]
+      @insertBefore(elmt, target)
+
+  move: (current, targetPosition)->
+    if typeof current is 'number'
+      current = @children current
+    @insert current, targetPosition
+
+  del: (position) ->
+
+  C : (children...) ->
+    if not children
+      return @elmt
+    children.forEach (child) =>
+      if not child
+        return 
+      # console.log child
+      if child instanceof Piece
+        @elmt.appendChild child.elmt
+      else if child instanceof Function
+        this.C child()
+      else if child instanceof Array
+        this.C child...
+      else if child.piece
+        this.C child.piece
+      # else if child.build
+      #   this.C child.build()
+      else
+        appendHTML @elmt, child.toString()
+
+    return this
+
+  reC: (children...) ->
+    @elmt.innerHTML = ''
+    @C children...
+
+appendHTML = (parent, html) ->
+  div = document.createElement('div')
+  div.innerHTML = html
+  for child in div.childNodes
+    parent.appendChild child
+    
+attrs.forEach (attr) ->
+  attr = attr.trim()
+  Piece.prototype[attr] = (value) ->
+    if value isnt undefined
+      if value instanceof Piece
+        value = value.elmt
+      @elmt.setAttribute(attr, value)
+      return this
+    else
+      return @elmt.getAttribute(attr)
+events.forEach (event) ->
+  event = event.trim()
+  Piece.prototype[event] = (func) ->
+    if func
+      @elmt[event] = func
+    return this
+props.forEach (prop) ->
+  prop = prop.trim()
+  Piece.prototype[prop] = (value) ->
+    if value isnt undefined
+      @elmt[prop] = value
+      return this
+    else
+      return @elmt[prop]
+
+methods.forEach (method) ->
+  method = method.trim()
+  Piece.prototype[method] = (args...) ->
+    @elmt[method] args...
+
+Piece.prototype.value = (value) ->
+  if value isnt undefined
+    @elmt['value'] = value
+    @
+  else
+    @elmt['value']
+
+
+class PieceSet 
+  constructor: (@elmts) ->
+    @set = []
+    for elmt in @elmts
+      @set.push new Piece(elmt)
+
+  run: (funName, args...) ->
+    for piece in @set
+      piece[funName] args...
+
+
+
+for func in Object.keys(Piece.prototype)
+  do (func)->
+    if Piece.prototype[func] instanceof Function
+      PieceSet.prototype[func] = (args...) ->
+        @run func, args...
+
+window.P = (selector, element) ->
+  element ?= document
+  if selector instanceof Element
+    return new Piece selector
+  type = selector[0]
+  name = selector[1..]
+  elmts = {}
+  if type is '#'
+    elmt = element.getElementById(name)
+    new Piece elmt
+  else if type is '.'
+    elmts = element.getElementsByClassName(name)
+    new PieceSet elmts
+  else 
+    elmts = element.getElementsByTagName(selector)
+    new PieceSet elmts
+
+
+
+tags.forEach (tag) ->
+  tag = tag.trim()
+  P[tag] = (className) ->
+    if className
+      new Piece(tag).class(className)
+    else 
+      new Piece(tag)
+
+P.inputBox = (className)->
+  if className
+    P.input(className).type('text')
+  else
+    P.input().type('text')
+

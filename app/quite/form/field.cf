@@ -1,0 +1,10 @@
+module.exports = class Field
+  constructor: ->
+    super
+    @attrs(
+      'title'
+      'value'
+      'viewer'
+    )
+
+

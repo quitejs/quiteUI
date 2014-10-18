@@ -1,0 +1,49 @@
+class Common
+  clearSelection: ->
+    if(document.selection && document.selection.empty) 
+        document.selection.empty()
+    else if(window.getSelection) 
+        sel = window.getSelection()
+        sel.removeAllRanges()
+  move: (array, current, targetIndex) ->
+    if typeof current isnt 'number'
+      current = array.indexOf(current)
+      # console.log current
+    if targetIndex < 0
+      targetIndex = 0
+    # if targetIndex >= array.length
+
+    array.splice targetIndex, 0, array.splice(current, 1)[0]
+
+  insert: (array, item, position) ->
+    array.splice position, 0, item
+  keycode: (num) ->
+    {keycode_dict} = require './constants'
+    keycode_dict[num]
+
+  url: (url) ->
+    new Url url
+
+  ajax: (url, params, done)->
+    # done = (data, status) =>
+    #   console.log 'data', data
+    #   @D = data
+    #   console.log 'get', @D
+    fail = ->
+      console.log 'error'
+    $.ajax(
+      url: url
+      data: params
+      dataType: 'json'
+      success: done
+      error: fail
+      async: false
+    )
+module.exports = new Common()
+
+class Url
+  constructor: (@url) ->
+
+  get: (attrName) ->
+    $.url(attrName, @url)
+

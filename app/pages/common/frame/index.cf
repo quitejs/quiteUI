@@ -1,0 +1,9 @@
+class Frame extends Block
+  build: ->
+    @piece = P.div('quite').C(
+      @content = P.div('content')
+    )
+
+  setContent: (page) ->
+    @content.C(page.piece)
+module.exports = new Frame()

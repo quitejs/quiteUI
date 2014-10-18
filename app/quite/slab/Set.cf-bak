@@ -1,0 +1,21 @@
+module.exports = class Set extends Backbone.Collection
+  constructor: (models, options) ->
+    super models, options
+    @url = @host + @location
+    @on 'add', (model) =>
+      model.render()
+      @display model
+
+  display: (model)->
+    listHolder = $('#list-holder', @piece.elmt)
+    if listHolder.children().length
+      listHolder.children().first().before model.piece.elmt
+    else
+      listHolder.append model.piece.elmt
+
+  listHolder: {}
+  attrs: []
+  host: ''
+  location: ''
+  query: {}
+  piece: {}

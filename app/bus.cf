@@ -1,0 +1,38 @@
+window.Bus =
+  host: 'http://192.168.1.101:1337'
+  # page: (queryString) ->
+  #   url = 'http://127.0.0.1:1338'
+  #   "#{url}/#{queryString}"
+  #
+  # acnt: (queryString) ->
+  #   url = 'http://127.0.0.1:1337'
+  #   "#{url}/#{queryString}"
+
+  currentPage: null
+  form: (host, method) ->
+    Bus[host] "#{host}/#{method}"
+
+  formSave: (host) ->
+hosts = {}
+try
+  hosts = require 'config'
+catch e
+  console.log e
+  hosts = require 'config-prod'
+
+for host in _.keys hosts
+  do (host)->
+    Bus[host] = (queryString) ->
+      "#{hosts[host]}/#{queryString}"
+    Host = host[0].toUpperCase() + host[1..]
+    window[Host] = (queryString, params, cb) =>
+      # console.log 'query', queryString
+      url = Bus[host](queryString)
+      console.log url
+      success = (data, status, obj) ->
+        cb null, data
+
+      post = $.post url, params, success, 'json'
+      post.fail = cb
+
+_.extend Bus, Backbone.Events

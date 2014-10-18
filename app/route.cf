@@ -1,0 +1,57 @@
+frame = require 'pages/common/frame'
+window.onhashchange = =>
+  # console.log 'changed'
+  route()
+
+module.exports = route = (hash)->
+  if not hash
+    hash = new Hash() # hash to current hashstr
+  page = require "pages/#{hash.page()}"
+  # page = new Page()
+  # console.log 'page', page.dataSrc
+  if page.needAcnt and not (Bus.user and Bus.user.token)
+    new Hash('curtain').params(target=
+      target: hash.hashStr()
+    ).trigger()
+    return
+
+  hash.action() or hash.action('index')
+  if page is Bus.currentPage
+    if page[hash.action()]
+      page[hash.action()](hash.params())
+  else
+    window.onkeyup = null
+    # console.log Bus.currentPage
+    if Bus.currentPage
+      Bus.currentPage.remove()
+    # document.body.appendChild page.build().elmt
+    if hash.page() is 'curtain'
+      frame.piece.hide()
+      page.build()
+      document.body.appendChild page.piece.elmt
+      # console.log 'curtain', page
+    else
+      console.log page
+      frame.piece.show()
+      page.render(hash.params())
+      page.build()
+      frame.setContent page
+
+    # Bus.on hash._page, =>
+    #   page.render()
+    #   page.build()
+      # console.log 'page', page
+    Bus.currentPage = page
+
+    if page[hash.action()]
+      page[hash.action()]()
+    # else
+      # page['build']()
+
+#
+# _.extend route, Backbone.Events
+# route.on 'jump', (hash) ->
+#   route hash
+#
+# window.jump = (hash) ->
+#   route.trigger 'jump', hash

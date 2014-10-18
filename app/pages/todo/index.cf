@@ -1,0 +1,152 @@
+store = require './store'
+Footer = require './Footer'
+class Todo extends Block
+  render: (params)=>
+    store.get {}, (err, @D) =>
+  build: (status) ->
+    status || status = 'all'
+    @items = for todo in @D
+      item = new TodoItem(todo).page(@)
+    @piece = P.div().id('todo').C(
+      P.section(status).id("todoapp").C(
+        P.header().id('header').C(
+          P.h1().C('todos')
+          @newBox = P.inputBox().id('new-todo').placeholder(
+            'What need to be done?'
+          ).autofocus(true).onkeyup (e)=>
+            if e.which is 13
+              todo = {}
+              todo.title = @newBox.value()
+              @newBox.value('')
+              todo.isCompleted = false
+              @add todo
+        )
+        P.section().id('main').C(
+          P.div().style('display:block')
+          P.input().id('toggle-all').type('checkbox').onclick =>
+            # for todo in @D
+              
+
+          P.label().for('toggle-all').C(
+            'Mark all as complete'
+          )
+          @container = P.ul().id('todo-list').C(
+            for item in @items
+              item.build()
+              item.render(item.D).piece
+          )
+        )
+        @footer = new Footer().page(@)
+        @footer.build()
+        @updateFooter()
+      )
+    )
+
+  clearCompleted: ->
+    for i in [@items.length-1..0]
+      item = @items[i]
+      console.log 'item', item
+      if item.D.isCompleted 
+        @remove item
+    @updateFooter()
+
+  remove: (item) ->
+    store.del item.D, (err, result) =>
+      index = @items.indexOf item
+      console.log index
+      @D.splice index, 1
+      item.piece.destroy()
+      @items.splice index, 1
+      console.log 'D', @D
+      @updateFooter()
+
+  updateFooter: ->
+    count = @D.length
+    completed = @D.filter (todo) ->
+      todo.isCompleted is true
+    active = @D.filter (todo) ->
+      todo.isCompleted is false
+    info = 
+      active: active.length
+      completed: completed.length
+    @footer.render info
+  all: =>
+    if @piece
+      @piece.class('')
+    else
+      @build()
+  active: =>
+    if @piece
+      @piece.class('active')
+    else
+      @build 'active'
+
+  completed: =>
+    if @piece
+      @piece.class 'complete'
+    else
+      @build 'complete'
+
+
+  new: (title) ->
+    @newBox.value title
+
+  add: (todo) ->
+    if not todo.title.trim()
+      return
+    store.add todo, (err, todo) =>
+      item = new TodoItem(todo).page(@)
+      @items.unshift item
+      item.build()
+      item.render(todo)
+
+      @container.insert item.piece, 0
+      _.insert @D, todo, 0
+      @updateFooter()
+
+class TodoItem extends Matter
+  build: ->
+    console.log 'D', @D
+# style('display:list-item').
+    @piece = P.li('animated-item-view animated-item-view-end').C(
+
+        P.div('view').C(
+          @toggler = P.input('toggle').type('checkbox').onclick =>
+            @changeStatus()
+
+
+          @view = P.label().h('title').ondblclick (e)=>
+            @piece.addClass 'editing'
+            _.clearSelection()
+            @edit.focus(true)
+
+          P.button('destroy').onclick =>
+            @_page.remove @
+        )
+        @edit = P.input('edit').value(@D.title).onkeyup((e) =>
+          if e.which is 13
+            @changeTitle()
+        ).onblur =>
+          @changeTitle()
+
+      )
+    if @D.isCompleted
+      @piece.addClass 'completed'
+      @toggler.checked(true)
+    @piece
+  changeTitle: ->
+    @piece.removeClass 'editing'
+    @D.title = @edit.value()
+    store.mod @D, (err, @D) =>
+      @render @D
+
+  changeStatus: ->
+    @piece.toggleClass 'completed'
+
+
+    @D.isCompleted = not @D.isCompleted
+    store.mod @D, (err, @D) =>
+      @_page.updateFooter()
+    
+
+module.exports = todo = new Todo()

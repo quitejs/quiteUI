@@ -1,0 +1,20 @@
+window.RadioSet = class RadioSet extends Block
+  constructor: ->
+    super
+    @attrs(
+      'items'
+    )
+    @_select = undefined
+
+  select: (index) ->
+    if index is undefined
+      @_select
+    else
+      if _.isObject index
+        index = @_items.indexOf(index)
+      if index isnt @_select
+        @_items[index].select()
+        if @_select or (@_select is 0)
+          # console.log @_select
+          @_items[@_select].unselect()
+        @_select = index

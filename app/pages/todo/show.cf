@@ -1,0 +1,25 @@
+todo = require './'
+module.exports =
+  plain: ->
+    todos = [
+      todo1 = 
+        id: 1
+        isCompleted: true
+        title: 'confirm'
+      todo2 = 
+        id: 2
+        isCompleted: false
+        title: 'plan'
+      todo3 = 
+        id: 3
+        isCompleted: false
+        title: 'work'
+      todo4 = 
+        id: 4
+        isCompleted: false
+        title: 'check'
+    ]
+    todo.D = todos
+    todo.build()
+
+

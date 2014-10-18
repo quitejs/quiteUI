@@ -1,0 +1,39 @@
+window.Hash = class Hash extends Quite
+  constructor: (pageOrHash) ->
+    super
+    @attrs(
+      'page'
+      'action'
+      'params'
+      'hashStr'
+    )
+    if not pageOrHash
+      pageOrHash = window.location.hash
+    if pageOrHash.indexOf('#') >= 0
+      @_hashStr = pageOrHash
+      [hash, @_params] = @_hashStr.split '?'
+      if @_params
+        try
+          @_params = $.querystring @_params
+        catch err 
+      [@_page, @_action] = hash.split '/'
+      @_page = @_page.split('#')[1]
+      # @_assemble()
+    else
+      if not pageOrHash
+        pageOrHash = 'home'
+      @page pageOrHash
+      # @_assemble()
+
+  assemble: ->
+    @_hashStr = "##{@_page}"
+    if @_action
+      @_hashStr = "#{@_hashStr}/#{@_action}"
+    if @_params
+      @_hashStr = "#{@_hashStr}?#{$.querystring(@_params)}"
+    @
+
+  trigger: ->
+    @assemble()
+    window.location.hash = @_hashStr
+    # jump @
