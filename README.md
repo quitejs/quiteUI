@@ -27,4 +27,4 @@ Useage
   * npm install
   * bower install
   * npm start (start development server in source watch mode) 
-  * visit (http://localhost:3333/#todo) to view the todo demo
+  * visit [http://localhost:3333/#todo](http://localhost:3333/#todo) to view the todo demo
