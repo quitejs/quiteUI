@@ -3,8 +3,8 @@ Footer = require './Footer'
 class Todo extends Block
   render: (params)=>
     store.get {}, (err, @D) =>
-  build: (status) ->
-    status || status = 'all'
+  build: ->
+    # status || status = 'all'
     @items = for todo in @D
       item = new TodoItem(todo).page(@)
     @piece = P.div().id('todo').C(
@@ -39,14 +39,15 @@ class Todo extends Block
           @container = P.ul().id('todo-list').C(
             for item in @items
               item.build()
-              item.render(item.D).piece
+              item.refresh(item.D).piece
           )
         )
         @footer = new Footer().page(@)
         @footer.build()
-        @updateFooter()
       )
     )
+    @updateFooter()
+    @piece
 
   clearCompleted: ->
     for i in [@items.length-1..0]
@@ -75,23 +76,26 @@ class Todo extends Block
     info = 
       active: active.length
       completed: completed.length
-    @footer.render info
+    @footer.refresh info
   all: =>
     if @piece
       @piece.class('')
     else
       @build()
+      @footer.select 0
   active: =>
     if @piece
       @piece.class('active')
     else
       @build 'active'
+    @footer.select 1
 
   completed: =>
     if @piece
       @piece.class 'complete'
     else
       @build 'complete'
+    @footer.select 2
 
 
   new: (title) ->
@@ -104,38 +108,38 @@ class Todo extends Block
       item = new TodoItem(todo).page(@)
       @items.unshift item
       item.build()
-      item.render(todo)
+      item.refresh(todo)
 
       @container.insert item.piece, 0
       _.insert @D, todo, 0
       @updateFooter()
 
-class TodoItem extends Matter
+class TodoItem extends Block
   build: ->
     console.log 'D', @D
 # style('display:list-item').
-    @piece = P.li('animated-item-view animated-item-view-end').C(
+    animateClass = 'animated-item-view animated-item-view-end'
+    @piece = P.li(animateClass).C(
+      P.div('view').C(
+        @toggler = P.input('toggle').type('checkbox').onclick =>
+          @changeStatus()
 
-        P.div('view').C(
-          @toggler = P.input('toggle').type('checkbox').onclick =>
-            @changeStatus()
 
+        @view = P.label().h('title').ondblclick (e)=>
+          @piece.addClass 'editing'
+          _.clearSelection()
+          @edit.focus(true)
 
-          @view = P.label().h('title').ondblclick (e)=>
-            @piece.addClass 'editing'
-            _.clearSelection()
-            @edit.focus(true)
-
-          P.button('destroy').onclick =>
-            @_page.remove @
-        )
-        @edit = P.input('edit').value(@D.title).onkeyup((e) =>
-          if e.which is 13
-            @changeTitle()
-        ).onblur =>
-          @changeTitle()
-
+        P.button('destroy').onclick =>
+          @_page.remove @
       )
+      @edit = P.input('edit').value(@D.title).onkeyup((e) =>
+        if e.which is 13
+          @changeTitle()
+      ).onblur =>
+        @changeTitle()
+
+    )
     if @D.isCompleted
       @piece.addClass 'completed'
       @toggler.checked(true)
@@ -144,7 +148,7 @@ class TodoItem extends Matter
     @piece.removeClass 'editing'
     @D.title = @edit.value()
     store.mod @D, (err, @D) =>
-      @render @D
+      @refresh @D
 
   changeStatus: ->
     @piece.toggleClass 'completed'
