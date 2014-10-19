@@ -1,11 +1,13 @@
 module.exports = class Footer extends Matter
   render: (@D) ->
     super @D
+    # @completed.hide()
+    # return
     if @D.completed is 0
       @completed.hide()
-    else
-      if @completed._hide
-        @completed.show()
+    # else
+    #   if @completed._hide
+    #     @completed.show()
   build: ->
 
     set = new StatusSet()

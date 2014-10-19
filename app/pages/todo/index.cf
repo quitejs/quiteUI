@@ -23,9 +23,15 @@ class Todo extends Block
         )
         P.section().id('main').C(
           P.div().style('display:block')
-          P.input().id('toggle-all').type('checkbox').onclick =>
-            # for todo in @D
-              
+          @toggler = P.input().id('toggle-all').type('checkbox').onclick =>
+            console.log 'toggle all', @toggler
+            checkStatus = @toggler.elmt.checked
+            for item in @items
+              console.log item.D.isCompleted, checkStatus
+              if item.D.isCompleted isnt checkStatus
+                # item.toggler.checked(checkStatus)
+                item.toggler.elmt.checked = checkStatus
+                item.changeStatus()
 
           P.label().for('toggle-all').C(
             'Mark all as complete'
