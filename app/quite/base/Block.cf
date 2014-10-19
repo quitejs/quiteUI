@@ -74,7 +74,9 @@ window.Block = class Block extends Quite
   build: ->
     P.div('')
 
-  refresh: ->
+  refresh: (data)->
+    if data isnt undefined
+      @D = data
     # model = @getTemplateData()
     element = @piece.elmt
     holders = element.getElementsByClassName('pieceHolder')

@@ -3,26 +3,26 @@ module.exports = class Footer extends Matter
     super @D
     # @completed.hide()
     # return
-    if @D.completed is 0
-      @completed.hide()
+    # if @D.completed is 0
+    #   @completed.hide()
     # else
     #   if @completed._hide
     #     @completed.show()
   build: ->
 
-    set = new StatusSet()
+    @set = new StatusSet()
     @piece = P.footer().id('footer').C(
       P.span().id('todo-count').C(
         P.strong().h('active')
         ' items left'
       )
-      set.items(
+      @set.items(
         for statu in ['all', 'active', 'completed']
           item = new StatusItem(statu)
-          item.set(set)
+          item.set(@set)
       )
-      set.build()
-      set.select(0)
+      @set.build()
+      @set.select(0)
 
       @completed = P.button().id('clear-completed').C(
         "Clear completed("
@@ -32,6 +32,18 @@ module.exports = class Footer extends Matter
         @_page.clearCompleted()
     )
     @piece
+
+  refresh: (data)->
+    super
+    if @D.completed is 0
+      @completed.hide()
+    else
+      if @completed._hide
+        @completed.show()
+    
+  select: (index) ->
+    @set.select index
+
 
 class StatusSet extends RadioSet
   build: ->
