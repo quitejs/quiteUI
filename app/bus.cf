@@ -35,4 +35,3 @@ for host in _.keys hosts
       post = $.post url, params, success, 'json'
       post.fail = cb
 
-_.extend Bus, Backbone.Events

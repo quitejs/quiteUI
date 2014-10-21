@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "main": "public/index.html",
   "dependencies": {
-    "backbone": "~1.1.2",
-    "backbone.localstorage": "~1.1.7",
     "underscore": "~1.6.0",
     "jquery": "~2.0.3"
   }
