@@ -28,3 +28,33 @@ Useage
   * bower install
   * npm start (start development server in source watch mode) 
   * visit [http://localhost:3333/#todo](http://localhost:3333/#todo) to view the todo demo
+
+
+
+  * to start a new project based on quiteUI, just run 
+  ```
+  brunch new gh:quitejs/quiteUI <your-project-name>
+  ```
+
+##Philosopy
+
+###programmatic
+   HTML is a great tool to build UIs, but it's not programmatic, then we can't to use the power of switch, loop, function, object, class to simplify things as we do in javascript or other programming language, so the first mission of quiteUI is to turn HTML to programmatic .
+
+###dont't pre-encapsulation
+  quiteUI is target to offer a set of tools, or a set of prototypes later, and encapsulate things as little as possible . you encapsulate it based on the complexity of your project . 
+
+###objective 
+  quiteUI adopt coffeescript(a meta-language of javascript), to write objective code more fancy, and make write UIs like write backend code, like write ruby code. 
+
+###modularity
+  modulariy is great method to trun a large, complex project into little and simple ones. 
+
+###auti-MVC
+  quiteUI use modularity than layer to simplify things
+  
+
+
+
+
+
