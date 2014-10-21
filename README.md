@@ -1,10 +1,8 @@
-quiteUI
-=======
+#quiteUI
 
 write HTML in nearly pure javascript(coffeescript)
 
-Useage
-======
+#Useage
 
   * first you should have [Node.js](http://nodejs.org/) and [coffeescript](http://coffeescript.org/) installed
   * install [brunch](brunch.io)
@@ -36,7 +34,7 @@ Useage
   brunch new gh:quitejs/quiteUI <your-project-name>
   ```
 
-##Philosopy
+#Philosopy
 
 ###programmatic
    HTML is a great tool to build UIs, but it's not programmatic, then we can't to use the power of switch, loop, function, object, class to simplify things as we do in javascript or other programming language, so the first mission of quiteUI is to turn HTML to programmatic .
