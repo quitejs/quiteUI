@@ -22,7 +22,7 @@ write HTML in nearly pure javascript(coffeescript) a different way
   CoffeeScriptCompiler.prototype.pattern = /\.(cf|coffee|coffee\.md|litcoffee)$/;
   ```
 
-  * 
+  * install dependencies and start
   ```
   npm install
   bower install
@@ -34,6 +34,8 @@ write HTML in nearly pure javascript(coffeescript) a different way
   ```
   brunch new gh:quitejs/quiteUI <your-project-name>
   ```
+  * view the source code 
+  the main source code of quite is under the __app/quite__ directory, and the demo of todo is under the __app/pages/todo__
 
 #Philosopy
 
@@ -50,10 +52,6 @@ write HTML in nearly pure javascript(coffeescript) a different way
   modulariy is great method to turn a large, complex project into little and simple ones. 
 
 ###anti-MVC
-  quiteUI use modularity than layer to simplify things
+  quiteUI use modularity than layer to simplify things, sure you can adopt any pattern inside a module if necessary
   
-
-
-
-
 
