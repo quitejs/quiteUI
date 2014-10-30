@@ -1,6 +1,6 @@
 #quiteUI
 
-write HTML in nearly pure javascript(coffeescript) a different way 
+write web App in nearly pure javascript(coffeescript) a different way 
 
 #Useage
 
