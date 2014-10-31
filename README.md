@@ -2,7 +2,7 @@
 
 write web App in nearly pure javascript(coffeescript) a different way 
 
-#Useage
+#Usage
 
   * first you should have [Node.js](http://nodejs.org/) and [coffeescript](http://coffeescript.org/) installed
   * install [brunch](brunch.io)
