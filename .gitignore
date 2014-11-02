@@ -24,5 +24,5 @@ Thumbs.db
 # bower_components/
 # node_modules/
 tmp/
-public/
+# public/
 app/config.cf
