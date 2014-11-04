@@ -53,4 +53,5 @@ write web App in nearly pure javascript(coffeescript) a different way
 ###anti-MVC
   quiteUI use modularity than layer to simplify things, sure you can adopt any pattern inside a module if necessary
   
-
+#warning
+  quiteUI is under heavy developing, and not tested in production, you're warned.
