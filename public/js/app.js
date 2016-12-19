@@ -245,10 +245,6 @@ for (_i = 0, _len = _ref.length; _i < _len; _i++) {
 module.exports = {};
 });
 
-;require.register("config", function(exports, require, module) {
-module.exports = {};
-});
-
 ;require.register("index", function(exports, require, module) {
 var frame, json, route;
 
