@@ -55,4 +55,3 @@ write web App in nearly pure javascript(coffeescript) a different way
   
 #warning
   quiteUI is under heavy developing, and not tested in production, you're warned.
-
